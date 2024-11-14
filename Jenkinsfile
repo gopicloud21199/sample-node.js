@@ -1,0 +1,89 @@
+@Library('yourSharedLibraryName') _
+
+pipeline {
+    agent {
+        docker {
+            alwaysPull true
+            image '537984406465.dkr.ecr.ap-south-1.amazonaws.com/allen-jenkins-agent:latest'
+            registryUrl 'https://537984406465.dkr.ecr.ap-south-1.amazonaws.com'
+            registryCredentialsId 'ecr:ap-south-1:AWSKey'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+
+        }
+    }
+
+    environment {
+        ECR_REPO = 'your-aws-account-id.dkr.ecr.your-region.amazonaws.com/your-repo-name'
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
+        DOCKER_IMAGE = "${env.ECR_REPO}:${env.IMAGE_TAG}"
+        SONAR_PROJECT_KEY = 'your-sonarqube-project-key'
+        SONAR_HOST_URL = 'https://your-sonarqube-instance.com'
+        SONAR_LOGIN = credentials('sonar-token') // Jenkins credentials ID for SonarQube token
+    }
+
+
+ stages {
+        stage('Checkout Code') {
+            steps {
+                checkoutCode()  // Call the shared library step for code checkout
+            }
+        }
+        
+        stage('GitLeaks Security') {
+            steps {
+                gitLeaksSecurityStep()  // Run GitLeaks security scan for sensitive data
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                testStep()  // Run unit tests
+            }
+        }
+
+        stage('Build Package') {
+            steps {
+                buildPackageStep()  // Build the application package (Maven, Node.js, etc.)
+            }
+        }
+
+        stage('SonarQube Scan') {
+            steps {
+                script {
+                    sonarQubeScanStep('your-project-key')  // Run SonarQube analysis
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                buildDockerImageStep(buildArg: '--build-arg GIT_TOKEN=\$GITHUB_PAT')  // Build the Docker image
+            }
+        }
+
+        stage('Docker Vulnerability Scan') {
+            steps {
+                dockerVulnerabilityScanStep()  // Run Trivy to scan Docker image for vulnerabilities
+            }
+        }
+
+        stage('Push to ECR') {
+            steps {
+                dockerPushToEcrStep()  // Push the built Docker image to AWS ECR
+            }
+        }
+
+        stage('Post Processing') {
+            steps {
+                postProcessingStep()  // Run any post-processing tasks (like archiving logs)
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up...'
+            cleanWs()  // Clean up the workspace after the build
+        }
+    }
+}
