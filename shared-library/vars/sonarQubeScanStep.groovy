@@ -1,6 +1,6 @@
 def call(String projectKey) {
     script {
-        def scannerHome = tool 'allen-sonar'
+        def scannerHome = tool 'sonar'
         withSonarQubeEnv(credentialsId: 'sonarqube-token', installationName: 'allen-sonar') {
             sh """sonar-scanner \\ 
                 -Dsonar.projectKey=${projectKey} \\ 
