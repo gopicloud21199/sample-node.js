@@ -25,7 +25,9 @@ pipeline {
  stages {
         stage('Checkout Code') {
             steps {
-                checkoutCode()  // Call the shared library step for code checkout
+                 script {
+                Checkout()  // Call the shared library step for code checkout
+                 }
             }
         }
         
