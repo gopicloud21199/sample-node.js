@@ -21,71 +21,71 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-			    script {
+	       script {
                   Checkout()  // Reusable checkout code step from vars/checkoutCode.groovy
-				}
+	      }
             }
         }
 
         stage('GitLeaks Security') {
             steps {
-			   script {
+		script {
                    gitLeaksSecurityStep()  // Reusable GitLeaks security scan step
-			   }
+		 }
             }
         }
 
         stage('Test') {
             steps {
-			   script {
+		script {
                   testStep()  // Reusable unit test step
-				}
+		}
             }
         }
 
         stage('Build Package') {
             steps { 
-			   script {
+		 script {
                    buildPackageStep()  // Reusable build package step (for Maven, Node.js)
-				}
+		}
             }
         }
 
         stage('SonarQube Scan') {
             steps {
-			   script {
+		 script {
                    sonarQubeScanStep('my-project-key')  // Reusable SonarQube scan step (pass the project key)
-				}
+		}
             }
         }
 
         stage('Build Docker Image') {
             steps {
-			   script {
+	        script {
                    buildDockerImageStep(buildArg: '--build-arg GIT_TOKEN=\$GITHUB_PAT')  // Reusable Docker build step
-				}
+		}
             }
         }
 
         stage('Docker Vulnerability Scan') {
             steps 
-			  script {
+		script {
                   dockerVulnerabilityScanStep()  // Reusable Docker vulnerability scan step
-				}
+		}
             }
         }
 
         stage('Push to ECR') {
             steps {
-			   script {
+		script {
                  dockerPushToEcrStep()  // Reusable Docker push to ECR step
-			   }
+		}
             }
         }
 
         stage('Update GitHub Repo') {
             steps {
-			   script {
+		script {
                   updateImageInGithubStep() // Call the shared library function
                 }
         
