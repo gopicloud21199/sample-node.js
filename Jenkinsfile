@@ -5,7 +5,7 @@ pipeline {
         docker {
             alwaysPull true
             image '537984406465.dkr.ecr.ap-south-1.amazonaws.com/allen-jenkins-agent:latest'
-            registryUrl 'https://537984406465.dkr.ecr.ap-south-1.amazonaws.com'
+            registryUrl 'https://577638354424.dkr.ecr.ap-south-1.amazonaws.com'
             registryCredentialsId 'ecr:ap-south-1:AWSKey'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
 
@@ -13,12 +13,12 @@ pipeline {
     }
 
     environment {
-        ECR_REPO = 'your-aws-account-id.dkr.ecr.your-region.amazonaws.com/your-repo-name'
+        ECR_REPO = '577638354424.dkr.ecr.ap-south-1.amazonaws.com/my-sample-repo'
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         DOCKER_IMAGE = "${env.ECR_REPO}:${env.IMAGE_TAG}"
-        SONAR_PROJECT_KEY = 'your-sonarqube-project-key'
-        SONAR_HOST_URL = 'https://your-sonarqube-instance.com'
-        SONAR_LOGIN = credentials('sonar-token') // Jenkins credentials ID for SonarQube token
+       // SONAR_PROJECT_KEY = 'your-sonarqube-project-key'
+       // SONAR_HOST_URL = 'https://your-sonarqube-instance.com'
+       // SONAR_LOGIN = credentials('sonar-token') // Jenkins credentials ID for SonarQube token
     }
 
 
