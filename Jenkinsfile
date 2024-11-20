@@ -3,11 +3,11 @@
 pipeline {
     agent {
         docker {
-            //alwaysPull true
-            //image '537984406465.dkr.ecr.ap-south-1.amazonaws.com/allen-jenkins-agent:latest'
-            //registryUrl 'https://577638354424.dkr.ecr.ap-south-1.amazonaws.com'
-            //registryCredentialsId 'ecr:ap-south-1:AWSKey'
-           // args '-v /var/run/docker.sock:/var/run/docker.sock'
+            alwaysPull true
+            image '537984406465.dkr.ecr.ap-south-1.amazonaws.com/allen-jenkins-agent:latest'
+            registryUrl 'https://577638354424.dkr.ecr.ap-south-1.amazonaws.com'
+            registryCredentialsId 'ecr:ap-south-1:AWSKey'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
 
         }
     }
