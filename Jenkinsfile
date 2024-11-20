@@ -1,8 +1,8 @@
 @Library('shared-library') _
 
 pipeline {
-    agent any {
-        //docker {
+    agent {
+        docker {
             //alwaysPull true
             //image '537984406465.dkr.ecr.ap-south-1.amazonaws.com/allen-jenkins-agent:latest'
             //registryUrl 'https://577638354424.dkr.ecr.ap-south-1.amazonaws.com'
@@ -80,7 +80,7 @@ pipeline {
                 updateImageInGithubStep() // Call the shared library function
             }
         }
-   // }
+    }
 
     post {
         always {
