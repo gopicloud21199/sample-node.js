@@ -73,9 +73,9 @@ pipeline {
             }
         }
 
-        stage('Post Processing) {
+        stage('Update GitHub Repo') {
             steps {
-                postProcessingStep()  // Run any post-processing tasks (like archiving logs)
+                updateImageInGithubStep() // Call the shared library function
             }
         }
     }
