@@ -1,5 +1,4 @@
-@Library('shared-library') _
-
+@Library('shared-Library') _
 pipeline {
     agent {
         docker {
@@ -8,82 +7,98 @@ pipeline {
             registryUrl 'https://577638354424.dkr.ecr.ap-south-1.amazonaws.com'
             registryCredentialsId 'ecr:ap-south-1:AWSKey'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
-
         }
     }
 
     environment {
-        ECR_REPO = '577638354424.dkr.ecr.ap-south-1.amazonaws.com/my-sample-repo'
-        IMAGE_TAG = "${env.BUILD_NUMBER}"
-        DOCKER_IMAGE = "${env.ECR_REPO}:${env.IMAGE_TAG}"
+         ECR_REPO = '577638354424.dkr.ecr.ap-south-1.amazonaws.com/my-sample-repo'
+         IMAGE_TAG = "${env.BUILD_NUMBER}"
+         DOCKER_IMAGE = "${env.ECR_REPO}:${env.IMAGE_TAG}"
        // SONAR_PROJECT_KEY = 'your-sonarqube-project-key'
        // SONAR_HOST_URL = 'https://your-sonarqube-instance.com'
        // SONAR_LOGIN = credentials('sonar-token') // Jenkins credentials ID for SonarQube token
     }
-
-
- stages {
+    stages {
         stage('Checkout Code') {
             steps {
-                Checkout()  // Call the shared library step for code checkout
+			    script {
+                  Checkout()  // Reusable checkout code step from vars/checkoutCode.groovy
+				}
             }
         }
-        
+
         stage('GitLeaks Security') {
             steps {
-                gitLeaksSecurityStep()  // Run GitLeaks security scan for sensitive data
+			   script {
+                   gitLeaksSecurityStep()  // Reusable GitLeaks security scan step
+			   }
             }
         }
-        
+
         stage('Test') {
             steps {
-                testStep()  // Run unit tests
+			   script {
+                  testStep()  // Reusable unit test step
+				}
             }
         }
 
         stage('Build Package') {
-            steps {
-                buildPackageStep()  // Build the application package (Maven, Node.js, etc.)
+            steps { 
+			   script {
+                   buildPackageStep()  // Reusable build package step (for Maven, Node.js)
+				}
             }
         }
 
         stage('SonarQube Scan') {
             steps {
-                script {
-                    sonarQubeScanStep('your-project-key')  // Run SonarQube analysis
-                }
+			   script {
+                   sonarQubeScanStep('my-project-key')  // Reusable SonarQube scan step (pass the project key)
+				}
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                buildDockerImageStep(buildArg: '--build-arg GIT_TOKEN=\$GITHUB_PAT')  // Build the Docker image
+			   script {
+                   buildDockerImageStep(buildArg: '--build-arg GIT_TOKEN=\$GITHUB_PAT')  // Reusable Docker build step
+				}
             }
         }
 
         stage('Docker Vulnerability Scan') {
-            steps {
-                dockerVulnerabilityScanStep()  // Run Trivy to scan Docker image for vulnerabilities
+            steps 
+			  script {
+                  dockerVulnerabilityScanStep()  // Reusable Docker vulnerability scan step
+				}
             }
         }
 
         stage('Push to ECR') {
             steps {
-                dockerPushToEcrStep()  // Push the built Docker image to AWS ECR
+			   script {
+                 dockerPushToEcrStep()  // Reusable Docker push to ECR step
+			   }
             }
         }
 
         stage('Update GitHub Repo') {
             steps {
-                updateImageInGithubStep() // Call the shared library function
+			   script {
+                  updateImageInGithubStep() // Call the shared library function
+                }
+        
             }
         }
-    }
+   
 
     post {
-        always {
-            echo 'Cleaning up...'
-            cleanWs()  // Clean up the workspace after the build
+        success {
+            echo 'Pipeline completed successfully'
+        }
+        failure {
+            echo 'Pipeline failed'
         }
     }
 }
