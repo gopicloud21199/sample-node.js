@@ -73,7 +73,7 @@ pipeline {
             }
         }
 
-        stage('Post Processing') {
+        stage('Post Processing) {
             steps {
                 postProcessingStep()  // Run any post-processing tasks (like archiving logs)
             }
