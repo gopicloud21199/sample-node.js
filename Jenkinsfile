@@ -63,8 +63,7 @@ pipeline {
                 '''
             }
         }
-    /*
-        stage('SonarQube Scan') {
+        /*stage('SonarQube Scan') {
             steps {
                 def scannerHome = tool 'sonar'
                 withSonarQubeEnv(credentialsId: 'sonarqube-token', installationName: 'sonar') {
@@ -83,8 +82,7 @@ pipeline {
                 }
                 sh 'echo "Sonarqube scan is successful" > $WORKSPACE/sonarqube_scan_result.txt'
             }
-        }
-   */
+        }*/
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker Image'
