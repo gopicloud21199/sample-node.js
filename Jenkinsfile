@@ -63,7 +63,7 @@ pipeline {
                 '''
             }
         }
-      /*
+    /*
         stage('SonarQube Scan') {
             steps {
                 def scannerHome = tool 'sonar'
@@ -74,7 +74,7 @@ pipeline {
                         -Dsonar.verbose=true \\
                         -Dsonar.sources=. \\
                         -Dsonar.projectBaseDir=. \\
-                        -Dsonar.exclusions=**/.github/**,**/cmd/**,**/server/**,**/mocks/**,**/*aws-template.yml,**/*mock*.go,**/tests/**,**/*_test.go,***/*_test_data.go,.yml,*.yaml,*.proto,Dockerfile,*.md,*.yaml,**/*.pb.go,**/*.pb.*.go,*.mod,*.json,*.out,Makefile,LICENSE,.gitignore \\
+                        -Dsonar.exclusions=**/.github/**,**/cmd/**,**/server/**,**/mocks/**,**/*aws-template.yml,**/*mock*.go,**/tests/**,**/*_test.go,***/*_test_data.go,.yml,*.yaml,*.proto,Dockerfile,*.md,*.yaml,**/*.pb.go,**/*.pb.*.go,*.mod,*.json,*.out,Makefile,LICENSE,.gitignore
                         -Dsonar.tests=. \\
                         -Dsonar.test.inclusions=**/*_test*.go \\
                         -Dsonar.go.coverage.reportPaths=sonar_coverage.out \\
@@ -84,8 +84,7 @@ pipeline {
                 sh 'echo "Sonarqube scan is successful" > $WORKSPACE/sonarqube_scan_result.txt'
             }
         }
-    */
-
+   */
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker Image'
