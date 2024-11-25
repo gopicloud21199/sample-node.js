@@ -1,13 +1,24 @@
 {
-  "name": "simple-node-app",
+  "name": "sample-nodejs-app",
   "version": "1.0.0",
-  "description": "A simple Node.js app for deployment",
-  "main": "app.js",
+  "description": "A simple Node.js application",
+  "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "test": "echo \"No test specified\" && exit 0" // Replace with actual tests if available
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "nodejs",
+    "sample"
+  ],
+  "author": "Your Name",
+  "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.17.1"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">= 14.0.0"
   }
 }
+
