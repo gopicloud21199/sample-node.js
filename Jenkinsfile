@@ -80,7 +80,7 @@ pipeline {
                         -Dsonar.go.tests.reportPaths=coverage.out
                     """
                 }
-                sh 'echo "Sonarqube scan is successful" > $WORKSPACE/sonarqube_scan_result.txt'
+                //sh 'echo "Sonarqube scan is successful" > $WORKSPACE/sonarqube_scan_result.txt'
             }
         }*/
         stage('Build Docker Image') {
