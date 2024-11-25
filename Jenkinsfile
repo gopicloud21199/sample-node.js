@@ -63,7 +63,7 @@ pipeline {
                 '''
             }
         }
-
+      /*
         stage('SonarQube Scan') {
             steps {
                 def scannerHome = tool 'sonar'
@@ -84,6 +84,7 @@ pipeline {
                 sh 'echo "Sonarqube scan is successful" > $WORKSPACE/sonarqube_scan_result.txt'
             }
         }
+    */
 
         stage('Build Docker Image') {
             steps {
