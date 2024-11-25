@@ -74,7 +74,7 @@ pipeline {
                         -Dsonar.verbose=true \\
                         -Dsonar.sources=. \\
                         -Dsonar.projectBaseDir=. \\
-                        -Dsonar.exclusions=**/.github/**,**/cmd/**,**/server/**,**/mocks/**,**/*aws-template.yml,**/*mock*.go,**/tests/**,**/*_test.go,***/*_test_data.go,.yml,*.yaml,*.proto,Dockerfile,*.md,*.yaml,**/*.pb.go,**/*.pb.*.go,*.mod,*.json,*.out,Makefile,LICENSE,.gitignore
+                        -Dsonar.exclusions=**/.github/**,**/cmd/**,**/server/**,**/mocks/**,**/*aws-template.yml,**/*mock*.go,**/tests/**,**/*_test.go,**/*_test_data.go,**/*.yml,**/*.yaml,**/*.proto,Dockerfile,**/*.md,**/*.yaml,**/*.pb.go,**/*.pb.*.go,**/*.mod,**/*.json,**/*.out,Makefile,LICENSE,.gitignore \\
                         -Dsonar.tests=. \\
                         -Dsonar.test.inclusions=**/*_test*.go \\
                         -Dsonar.go.coverage.reportPaths=sonar_coverage.out \\
