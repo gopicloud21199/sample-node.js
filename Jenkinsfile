@@ -1,3 +1,5 @@
+@Library('My_shared_library') _
+
 pipeline {
     agent {
         docker {
@@ -13,133 +15,84 @@ pipeline {
          ECR_REPO = '577638354424.dkr.ecr.ap-south-1.amazonaws.com/my-sample-repo'
          IMAGE_TAG = "${env.BUILD_NUMBER}"
          DOCKER_IMAGE = "${env.ECR_REPO}:${env.IMAGE_TAG}"
-         // SONAR_PROJECT_KEY = 'your-sonarqube-project-key'
-         // SONAR_HOST_URL = 'https://your-sonarqube-instance.com'
-         // SONAR_LOGIN = credentials('sonar-token') // Jenkins credentials ID for SonarQube token
+       // SONAR_PROJECT_KEY = 'your-sonarqube-project-key'
+       // SONAR_HOST_URL = 'https://your-sonarqube-instance.com'
+       // SONAR_LOGIN = credentials('sonar-token') // Jenkins credentials ID for SonarQube token
     }
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/gopicloud21199/sample-node.js.git'
+	       script {
+                  Checkout()  // Reusable checkout code step from vars/checkoutCode.groovy
+	      }
             }
         }
 
         stage('GitLeaks Security') {
             steps {
-                echo "Running GitLeaks security scan for sensitive data"
-                sh '''
-                    gitLeaks detect --source=. --config .gitleaks.toml
-                '''
+		script {
+                   gitLeaksSecurityStep()  // Reusable GitLeaks security scan step
+		 }
             }
         }
 
         stage('Test') {
             steps {
-                echo "Running Unit Tests"
-                sh '''
-                    # Run unit tests here (example: using Go, Java, Node.js, etc.)
-                    # Example for Go:
-                    go test -v ./...
-                '''
+		script {
+                  testStep()  // Reusable unit test step
+		}
             }
         }
 
         stage('Build Package') {
             steps { 
-                echo "Building application package"
-                sh '''
-                    # Determine project type and build accordingly
-                    if [ -f "pom.xml" ]; then
-                        echo "Maven project detected. Building .jar/.war/.ear file."
-                        mvn clean package -DskipTests
-                    elif [ -f "package.json" ]; then
-                        echo "Node.js project detected. Building package."
-                        npm install
-                        npm run build  # Assuming there is a build script defined in package.json
-                        tar -czf myapp.tar.gz ./dist
-                    else
-                        echo "Unsupported project type. Skipping package build."
-                    fi
-                '''
+		 script {
+                   buildPackageStep()  // Reusable build package step (for Maven, Node.js)
+		}
+            }
+        }
+
+        stage('SonarQube Scan') {
+            steps {
+		 script {
+                   sonarQubeScanStep('my-project-key')  // Reusable SonarQube scan step (pass the project key)
+		}
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker Image'
-                withCredentials([string(credentialsId: 'git_pat', variable: 'GITHUB_PAT')]) {
-                    sh """
-                        # Fetching the latest commit ID
-                        commitId=\$(git log -n1 --format='%h')
-                        date=\$(date -u +'_%Y_%m_%d_%H_%M')
-                        IMAGE_TAG=v_\${commitId}\${date}
-                        echo 'Generated IMAGE_TAG: \$IMAGE_TAG'
-
-                        # Create a file to store the IMAGE_TAG
-                        touch ~/IMAGE_TAG.txt && echo \$IMAGE_TAG > ~/IMAGE_TAG.txt
-
-                        # Build the Docker image
-                        docker build -t \$REGISTRY/\$REPOSITORY:\$IMAGE_TAG .
-                    """
-                }
+	        script {
+                   buildDockerImageStep(buildArg: '--build-arg GIT_TOKEN=\$GITHUB_PAT')  // Reusable Docker build step
+		}
             }
         }
 
         stage('Docker Vulnerability Scan') {
-            steps {
-                sh '''
-                    IMAGE_TAG=`cat ~/IMAGE_TAG.txt`
-                    trivy image -s HIGH,CRITICAL -q \$REGISTRY/\$REPOSITORY:\$IMAGE_TAG
-                    trivy image -s HIGH,CRITICAL -q --format json \$REGISTRY/\$REPOSITORY:\$IMAGE_TAG > report.json
-
-                    critical_count=$(jq -r '.Results[].Vulnerabilities | map(select(.Severity == "CRITICAL")) | length' "report.json")
-                    high_count=$(jq -r '.Results[].Vulnerabilities | map(select(.Severity == "HIGH")) | length' "report.json")
-                    
-                    echo "{\"high_count\": \"$high_count\", \"critical_count\": \"$critical_count\"}" > image_vulnerability_count_report.json
-                    trivy image -s HIGH,CRITICAL -q --format template --template "@html.tpl" \$REGISTRY/\$REPOSITORY:\$IMAGE_TAG > report.html
-
-                    # Check if the branch is "main" before sending to S3
-                    if [ "$BRANCH_NAME" = "main" ]; then
-                        aws s3 cp report.html s3://scansite.allen-demo.in/${serviceName}/container-image-scan/report.html
-                        aws s3 cp image_vulnerability_count_report.json s3://scansite.allen-demo.in/${serviceName}/container-image-scan/image_vulnerability_count_report.json
-                    else
-                        echo "Branch is not main. Skipping S3 upload."
-                    fi
-                '''
+            steps 
+		script {
+                  dockerVulnerabilityScanStep()  // Reusable Docker vulnerability scan step
+		}
             }
         }
 
         stage('Push to ECR') {
             steps {
-                sh '''
-                    IMAGE_TAG=`cat ~/IMAGE_TAG.txt`  
-                    aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 537984406465.dkr.ecr.ap-south-1.amazonaws.com
-                    docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-                '''
+		script {
+                 dockerPushToEcrStep()  // Reusable Docker push to ECR step
+		}
             }
         }
 
         stage('Update GitHub Repo') {
             steps {
-                echo "Updating GitHub repository with the new image tag"
+		script {
+                  updateImageInGithubStep() // Call the shared library function
+                }
         
-                def imageTag = sh(script: 'cat ~/IMAGE_TAG.txt', returnStdout: true).trim()
-                def repoUrl = "https://github.com/your-username/your-repository.git"
-                def branch = "main"
-        
-                sh """
-                    git clone ${repoUrl} repo
-                    cd repo
-                    echo "Latest Docker Image Tag: ${imageTag}" > docker_image_tag.txt
-                    git add docker_image_tag.txt
-                    git config user.name "Jenkins CI"
-                    git config user.email "jenkins@example.com"
-                    git commit -m "Update Docker image tag to ${imageTag}"
-                    git push origin ${branch}
-                """
             }
         }
-    }
+   
 
     post {
         success {
