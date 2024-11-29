@@ -71,7 +71,7 @@ pipeline {
         }
 
         stage('Docker Vulnerability Scan') {
-            steps 
+            steps {
 		script {
                   dockerVulnerabilityScanStep()  // Reusable Docker vulnerability scan step
 		}
