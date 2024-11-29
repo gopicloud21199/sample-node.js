@@ -5,7 +5,7 @@ pipeline {
        docker {
            alwaysPull true
            image 'node:16-alpine'
-           registryCredentialsId 'AWS Credentials'
+           registryCredentialsId 'ecr:ap-south-1:AWS Credentials'
            registryUrl 'https://ap-south-1.console.aws.amazon.com/ecr/public-registry?region=ap-south-1'
 	   args '-v /var/run/docker.sock:/var/run/docker.sock'
        }
@@ -21,6 +21,14 @@ pipeline {
        // SONAR_LOGIN = credentials('sonar-token') // Jenkins credentials ID for SonarQube token
     }
     stages {
+	 stage('ECR creds') {
+             steps {
+                withAWS(credentials: 'ecr:ap-south-1:AWS Credentials', region: 'ap-south-1') {
+                // some block
+                   echo 'Using AWS credentials'
+                }
+            }
+	 }
         stage('Checkout Code') {
             steps {
 	       script {
