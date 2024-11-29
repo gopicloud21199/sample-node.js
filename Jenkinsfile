@@ -4,19 +4,21 @@ pipeline {
     agent {
         docker {
             alwaysPull true
-            image '577638354424.dkr.ecr.ap-south-1.amazonaws.com/sample-nodejs-app:latest'
-            registryUrl 'https://577638354424.dkr.ecr.ap-south-1.amazonaws.com'
-            registryCredentialsId 'ecr:ap-south-1:AWSKey'
+            image ''node:16-alpine'
+            // registryUrl 'https://577638354424.dkr.ecr.ap-south-1.amazonaws.com'
+            // registryCredentialsId 'ecr:ap-south-1:AWSKey'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
     environment {
-         ECR_REPO = '577638354424.dkr.ecr.ap-south-1.amazonaws.com/my-sample-repo'
-         IMAGE_TAG = "${env.BUILD_NUMBER}"
-         DOCKER_IMAGE = "${env.ECR_REPO}:${env.IMAGE_TAG}"
-       // SONAR_PROJECT_KEY = 'your-sonarqube-project-key'
-       // SONAR_HOST_URL = 'https://your-sonarqube-instance.com'
+           REPOSITORY = 'public.ecr.aws/w9z3v9t4/my-sample-test'
+           IMAGE_TAG = "${env.BUILD_NUMBER}"
+           DOCKER_IMAGE = "${env.ECR_REPO}:${env.IMAGE_TAG}"
+           REGISTRY = 'https://ap-south-1.console.aws.amazon.com/ecr/public-registry?region=ap-south-1'
+           AWS_REGION = 'ap-south-1'
+        // SONAR_PROJECT_KEY = 'your-sonarqube-project-key'
+        // SONAR_HOST_URL = 'https://your-sonarqube-instance.com'
        // SONAR_LOGIN = credentials('sonar-token') // Jenkins credentials ID for SonarQube token
     }
     stages {
