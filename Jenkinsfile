@@ -2,15 +2,14 @@
 
 pipeline {
     agent {
-        docker {
-            alwaysPull true
-            image 'node:16-alpine'
-            // registryUrl 'https://ap-south-1.console.aws.amazon.com/ecr/public-registry?region=ap-south-1'
-            // registryCredentialsId 'ecr:ap-south-1:AWSKey'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
-
+       docker {
+           alwaysPull true
+           image 'node:16-alpine'
+           registryCredentialsId 'AWS Credentials'
+           registryUrl 'https://ap-south-1.console.aws.amazon.com/ecr/public-registry?region=ap-south-1'
+	   args '-v /var/run/docker.sock:/var/run/docker.sock'
+       }
+  }
     environment {
            REPOSITORY = 'public.ecr.aws/w9z3v9t4/my-sample-test'
            IMAGE_TAG = "${env.BUILD_NUMBER}"
@@ -91,17 +90,16 @@ pipeline {
 		script {
                   updateImageInGithubStep() // Call the shared library function
                 }
-        
-            }
+             }
         }
 	    
-        post {
-          success {
-              echo 'Pipeline completed successfully'
-          }
-          failure {
-              echo 'Pipeline failed'
-        }
-     }
+       post {
+                success {
+                    echo 'Build stage completed successfully'
+                }
+                failure {
+                    echo 'Build stage failed'
+         }
+      }
    }
 }	
