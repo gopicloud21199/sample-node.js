@@ -5,7 +5,7 @@ pipeline {
         docker {
             alwaysPull true
             image ''node:16-alpine'
-            // registryUrl 'https://577638354424.dkr.ecr.ap-south-1.amazonaws.com'
+            // registryUrl 'https://ap-south-1.console.aws.amazon.com/ecr/public-registry?region=ap-south-1'
             // registryCredentialsId 'ecr:ap-south-1:AWSKey'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
