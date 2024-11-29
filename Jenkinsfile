@@ -6,15 +6,15 @@ pipeline {
            alwaysPull true
            image 'node:16-alpine'
            registryCredentialsId 'ecr:ap-south-1:AWS Credentials'
-           registryUrl 'https://ap-south-1.console.aws.amazon.com/ecr/public-registry?region=ap-south-1'
+           registryUrl '577638354424.dkr.ecr.ap-south-1.amazonaws.com'
 	   args '-v /var/run/docker.sock:/var/run/docker.sock'
        }
   }
     environment {
-           REPOSITORY = 'public.ecr.aws/w9z3v9t4/my-sample-test'
+           REPOSITORY = '577638354424.dkr.ecr.ap-south-1.amazonaws.com/my-sample-repo'
            IMAGE_TAG = "${env.BUILD_NUMBER}"
            DOCKER_IMAGE = "${env.ECR_REPO}:${env.IMAGE_TAG}"
-           REGISTRY = 'https://ap-south-1.console.aws.amazon.com/ecr/public-registry?region=ap-south-1'
+           REGISTRY = '577638354424.dkr.ecr.ap-south-1.amazonaws.com'
            AWS_REGION = 'ap-south-1'
         // SONAR_PROJECT_KEY = 'your-sonarqube-project-key'
         // SONAR_HOST_URL = 'https://your-sonarqube-instance.com'
