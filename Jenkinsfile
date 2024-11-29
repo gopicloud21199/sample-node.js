@@ -4,7 +4,7 @@ pipeline {
     agent {
        docker {
            alwaysPull true
-           image 'node:16-alpine'
+           image 'node:latest'
            registryCredentialsId 'ecr:ap-south-1:AWS Credentials'
            registryUrl 'https://577638354424.dkr.ecr.ap-south-1.amazonaws.com'
 	   args '-v /var/run/docker.sock:/var/run/docker.sock'
