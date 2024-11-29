@@ -4,14 +4,14 @@ pipeline {
     agent {
        docker {
            alwaysPull true
-           image 'node:latest'
+           image 'my-jenkins-image:latest'
            registryCredentialsId 'ecr:ap-south-1:AWS Credentials'
            registryUrl 'https://577638354424.dkr.ecr.ap-south-1.amazonaws.com'
 	   args '-v /var/run/docker.sock:/var/run/docker.sock'
        }
   }
     environment {
-           REPOSITORY = '577638354424.dkr.ecr.ap-south-1.amazonaws.com/node'
+           REPOSITORY = '577638354424.dkr.ecr.ap-south-1.amazonaws.com/my-jenkins-image'
            IMAGE_TAG = "${env.BUILD_NUMBER}"
            DOCKER_IMAGE = "${env.ECR_REPO}:${env.IMAGE_TAG}"
            REGISTRY = 'https://577638354424.dkr.ecr.ap-south-1.amazonaws.com'
