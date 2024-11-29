@@ -11,7 +11,7 @@ pipeline {
        }
   }
     environment {
-           REPOSITORY = '577638354424.dkr.ecr.ap-south-1.amazonaws.com/my-sample-repo'
+           REPOSITORY = '577638354424.dkr.ecr.ap-south-1.amazonaws.com/node'
            IMAGE_TAG = "${env.BUILD_NUMBER}"
            DOCKER_IMAGE = "${env.ECR_REPO}:${env.IMAGE_TAG}"
            REGISTRY = 'https://577638354424.dkr.ecr.ap-south-1.amazonaws.com'
