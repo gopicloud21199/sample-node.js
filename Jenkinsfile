@@ -24,7 +24,7 @@ pipeline {
 	 stage('ECR creds') {
              steps {
                 withAWS(credentials: 'ecr:ap-south-1:AWS Credentials', endpointUrl: '577638354424.dkr.ecr.ap-south-1.amazonaws.com', region: 'ap-south-1') {
-                // some block
+               // some block
 		 echo 'Using AWS credentials'
                 }
             }
