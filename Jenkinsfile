@@ -29,7 +29,7 @@ pipeline {
                 }
             }
 	 }
-        stage('Build') {
+         stage('Build') {
             when {
                 branch 'main' // Ensures this stage runs only for the 'main' branch
             }
