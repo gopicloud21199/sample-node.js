@@ -29,10 +29,18 @@ pipeline {
                 }
             }
 	 }
+        stage('Build') {
+            when {
+                branch 'main' // Ensures this stage runs only for the 'main' branch
+            }
+            steps {
+                echo 'Building for main branch'
+            }
+	}
         stage('Checkout Code') {
             steps {
 	       script {
-                  Checkout()  // Reusable checkout code step from vars/checkoutCode.groovy
+                  Checkout()  // Reusable checkout code step from vars/
 	      }
             }
         }
